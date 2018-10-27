@@ -9,9 +9,9 @@ So this abomination was born. PR welcomed.
 
 Buzzwords:
 ----------
-- SPA (Singl Page Application)
+- SPA (Single Page Application)
 - Single Activity Architecture
-_ Reactive Programming
+- Functional Reactive Programming (https://github.com/paldepind/flyd)
 
 Example
 =======
@@ -178,4 +178,4 @@ FAQ
 
 Q: Is it fast?
 
-A: Probably not. I'm new to Kotlin/Java development. PR welcomed.
+A: Probably not, PR welcomed. I was more focused on laying the foundations for functional and declarative style of programming for Android.
