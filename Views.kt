@@ -1,8 +1,10 @@
 package mvil
 
+import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import kotlin.math.max
 
 fun realiseView(activity: Context, parent: ViewGroup, virtual: Virtual): View {
@@ -24,5 +26,11 @@ fun deleteExcessChildren(rootView: ViewGroup, virtuals: ArrayList<Virtual>) {
 
     for (i in (rsize-excessSize)..(rsize-1)) {
         rootView.removeView(rootView.getChildAt(i))
+    }
+}
+
+class RenderView(val activity: Activity): FrameLayout(activity) {
+    fun sync(virtual: Virtual) {
+        render(activity, this, arrayListOf(virtual), "")
     }
 }

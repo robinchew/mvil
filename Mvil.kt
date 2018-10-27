@@ -51,9 +51,3 @@ fun render(activity: Activity, rootView: ViewGroup, virtuals: ArrayList<Virtual>
     }
     deleteExcessChildren(rootView, virtuals)
 }
-
-class RenderView(val activity: Activity, var renderView: () -> View): FrameLayout(activity) {
-    fun sync(virtual: Virtual) {
-        render(activity, this, arrayListOf(virtual), "")
-    }
-}
