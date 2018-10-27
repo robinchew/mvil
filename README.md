@@ -88,8 +88,7 @@ If I was better at using Kotlin features like:
 - https://kotlinlang.org/docs/reference/properties.html
 - https://kotlinlang.org/docs/reference/type-safe-builders.html
 
-
-It would have looked more like:
+It would have looked more like (credit to @isiahmeadows for the advice):
 
 ```
 // EXAMPLE ONLY
