@@ -15,6 +15,11 @@ Buzzwords:
 
 Example
 =======
+
+Custom Shortcuts
+----------------
+Where the `m`, `attrs`, `children` comes from, it's user set.
+
 ```kotlin
 typealias m = Virtual
 
@@ -24,12 +29,11 @@ fun attrs(vararg args: (View) -> Unit): ArrayList<(View) -> Unit> =
 fun children(vararg args: Virtual): ArrayList<Virtual> = arrayListOf(*args)
 ```
 
-```kotlin
-data class MyState(val id: String, val name: String, val checked: Boolean)
-```
+View
+----
 
 ```kotlin
-fun myView(activity: Context, value: MyState): Virtual {
+fun myView(activity: Context, value: MyState, actions: Actions): Virtual {
     return m(::LinearLayout,
         value.id,
         attrs(
@@ -68,13 +72,34 @@ fun myView(activity: Context, value: MyState): Virtual {
                     clickable(false),
                     checked(value.checked),
                     onClick {
-                        toggleCheck(value.id)
+                        actions::toggleCheck()
                     }))))
 }
 ```
 
-Static View
------------
+Global State
+------------
+
+```kotlin
+data class MyState(val id: String, val name: String, val checked: Boolean)
+```
+
+Actions
+-------
+Functions that changes the global state.
+
+```kotlin
+class Actions(val update: (f: (MyState) -> MyState) -> Unit) {
+    fun toggleCheck() {
+        update { state: MyState ->
+            state.copy(check=!state.checked)
+        }
+    }
+}
+```
+
+Activity with Static View
+--------------------------
 
 ```kotlin
 import mvil.*
@@ -82,15 +107,17 @@ import mvil.*
 class MyActivity: Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val renderable = RenderView(this)
-        renderable.sync(myView(activity, MyState("id123", "My Title", true)))
+        renderable.sync(myView(
+            activity,
+            MyState("id123", "My Title", true),
+            Actions(subject::onNext)))
         setContentView(renderable)
     }
 }
 ```
 
-View update on state change
----------------------------
-What's missing in the following example is a function that causes the state change.
+Activity with Dynamic View that updates on state change
+-------------------------------------------------------
 
 ```kotlin
 import io.reactivex.subjects.PublishSubject
@@ -102,9 +129,10 @@ class MyActivity: Activity() {
         renderable.sync()
 
         val subject = PublishSubject.create<(MyState) -> MyState>();
+        val actions = Actions(subject::onNext)))
 
         subject.scan(
-            myView(activity, MyState("id123", "My Title", true)),
+            myView(activity, MyState("id123", "My Title", true), actions),
             {old, new -> new(old)}
         ).subscribe {
             renderable.sync(myView(activity, it))
@@ -179,3 +207,11 @@ FAQ
 Q: Is it fast?
 
 A: Probably not, PR welcomed. I was more focused on laying the foundations for functional and declarative style of programming for Android.
+
+Q: Did you try the above examples that it works?
+
+A: Nope. It came from working code though, that was hastily rewritten.
+
+Q: Where can I complain?
+
+A: Find my e-mail in the commits.
