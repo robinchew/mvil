@@ -19,7 +19,11 @@ fun children(vararg args: Virtual): ArrayList<Virtual> = arrayListOf(*args)
 ```
 
 ```
-fun myView(activity: Context): Virtual {
+data class MyState(val id: String, val name: String, val checked: Boolean)
+```
+
+```
+fun myView(activity: Context, value: MyState): Virtual {
     return m(::LinearLayout,
         value.id,
         attrs(
@@ -31,9 +35,9 @@ fun myView(activity: Context): Virtual {
                 println("x of ${it.x}. Y of ${it.y}")
             },
             onGlobalLayout {view ->
-                value.animation.updatePositionOfView(view)
+                // animation.updatePositionOfView(view)
                 view.x = 400f
-                value.animation.start()
+                // animation.start()
             }
         ),
         children(
@@ -69,7 +73,7 @@ import mvil.*
 class MyActivity: Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val renderable = RenderView(this) {LinearLayout(activity)}
-        renderable.sync(myView(activity))
+        renderable.sync(myView(activity, MyState("id123", "My Title", true)))
         setContentView(renderable)
     }
 }
