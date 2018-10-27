@@ -82,7 +82,14 @@ class MyActivity: Activity() {
 Improvements
 ============
 
-If I was better at Kotlin, it would have looked more like:
+If I was better at using Kotlin features like:
+
+- https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/to.html
+- https://kotlinlang.org/docs/reference/properties.html
+- https://kotlinlang.org/docs/reference/type-safe-builders.html
+
+
+It would have looked more like:
 
 ```
 // EXAMPLE ONLY
