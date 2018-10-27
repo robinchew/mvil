@@ -200,9 +200,14 @@ m(::LinearLayout, id=value.id) {
     }
 }
 ```
+PR welcomed.
 
 FAQ
 ===
+
+Q: Why don't I just use Anko?
+
+Mvil tries to address the issue expressed in https://github.com/Kotlin/anko/issues/321.
 
 Q: Is it fast?
 
