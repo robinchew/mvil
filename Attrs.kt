@@ -30,6 +30,10 @@ fun getViewCache(view: View, attrName: String): ArrayList<Any>? {
     return null
 }
 
+fun removeViewCache(view: View) {
+    cachedAttrValues.remove(view)
+}
+
 private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     "onCreate" to {view: View, args: ArrayList<Any> ->
         val result = getViewCache(view, "created")

@@ -36,7 +36,7 @@ fun render(activity: Activity, rootView: ViewGroup, virtuals: ArrayList<Virtual>
         }
         else if (arrayListOf<String>(newTag) != cachedTag) {
             // println("remove $realChild")
-            rootView.removeView(realChild)
+            removeChild(rootView, realChild)
             return
         }
         for (f in virtualChild.attrs) {

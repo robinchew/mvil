@@ -13,6 +13,11 @@ fun realiseView(activity: Context, parent: ViewGroup, virtual: Virtual): View {
     return view
 }
 
+fun removeChild(parentView: ViewGroup, childView: View) {
+    parentView.removeView(childView)
+    removeViewCache(childView)
+}
+
 fun getChildren(viewGroup: ViewGroup, expectedLength: Int): List<View?> {
     return (0..expectedLength).map {i ->
         viewGroup.getChildAt(i)
@@ -25,7 +30,7 @@ fun deleteExcessChildren(rootView: ViewGroup, virtuals: ArrayList<Virtual>) {
     val excessSize = max(rsize-vsize, 0)
 
     for (i in (rsize-excessSize)..(rsize-1)) {
-        rootView.removeView(rootView.getChildAt(i))
+        removeChild(rootView, rootView.getChildAt(i))
     }
 }
 
