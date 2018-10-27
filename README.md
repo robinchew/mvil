@@ -7,9 +7,15 @@ Also inspired by Anvil (https://github.com/zserge/anvil). Hence the name.
 
 So this abomination was born. PR welcomed.
 
+Buzzwords:
+----------
+- SPA (Singl Page Application)
+- Single Activity Architecture
+_ Reactive Programming
+
 Example
 =======
-```
+```kotlin
 typealias m = Virtual
 
 fun attrs(vararg args: (View) -> Unit): ArrayList<(View) -> Unit> =
@@ -18,11 +24,11 @@ fun attrs(vararg args: (View) -> Unit): ArrayList<(View) -> Unit> =
 fun children(vararg args: Virtual): ArrayList<Virtual> = arrayListOf(*args)
 ```
 
-```
+```kotlin
 data class MyState(val id: String, val name: String, val checked: Boolean)
 ```
 
-```
+```kotlin
 fun myView(activity: Context, value: MyState): Virtual {
     return m(::LinearLayout,
         value.id,
@@ -67,13 +73,42 @@ fun myView(activity: Context, value: MyState): Virtual {
 }
 ```
 
-```
+Static View
+-----------
+
+```kotlin
 import mvil.*
 
 class MyActivity: Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val renderable = RenderView(this)
         renderable.sync(myView(activity, MyState("id123", "My Title", true)))
+        setContentView(renderable)
+    }
+}
+```
+
+View update on state change
+---------------------------
+What's missing in the following example is a function that causes the state change.
+
+```kotlin
+import io.reactivex.subjects.PublishSubject
+import mvil.*
+
+class MyActivity: Activity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        val renderable = RenderView(this)
+        renderable.sync()
+
+        val subject = PublishSubject.create<(MyState) -> MyState>();
+
+        subject.scan(
+            myView(activity, MyState("id123", "My Title", true)),
+            {old, new -> new(old)}
+        ).subscribe {
+            renderable.sync(myView(activity, it))
+        }
         setContentView(renderable)
     }
 }
