@@ -66,15 +66,19 @@ fun myView(activity: Context): Virtual {
 ```
 import mvil.*
 
-val renderable = RenderView(activity) {LinearLayout(activity)}
-renderable.sync(myView(activity))
-setContentView(renderable)
+class MyActivity: Activity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        val renderable = RenderView(this) {LinearLayout(activity)}
+        renderable.sync(myView(activity))
+        setContentView(renderable)
+    }
+}
 ```
 
 Improvements
 ============
 
-If I was better at Kotlin. It would have looked more like:
+If I was better at Kotlin, it would have looked more like:
 
 ```
 // EXAMPLE ONLY
