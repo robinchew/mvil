@@ -72,7 +72,7 @@ import mvil.*
 
 class MyActivity: Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val renderable = RenderView(this) {LinearLayout(activity)}
+        val renderable = RenderView(this)
         renderable.sync(myView(activity, MyState("id123", "My Title", true)))
         setContentView(renderable)
     }
