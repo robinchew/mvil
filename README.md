@@ -1,9 +1,9 @@
 Summary
 =======
 
-A Android Kotlin "Virtual DOM". I wanted something like Mithril (mithril.js.org) and apply the Meiosis pattern (meiosis.js.org/) for Android development.
+A Android Kotlin "Virtual DOM". I wanted something like Mithril (https://mithril.js.org) and apply the Meiosis pattern (http://meiosis.js.org) for Android development.
 
-Also inspired by Anvil (github.com/zserge/anvil). Hence the name.
+Also inspired by Anvil (https://github.com/zserge/anvil). Hence the name.
 
 So this abomination was born. PR welcomed.
 
