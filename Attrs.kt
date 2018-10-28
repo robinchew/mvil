@@ -46,23 +46,6 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     "onCrup" to {view: View, args: ArrayList<Any> ->
         (args[0] as (View) -> Unit)(view)
     },
-    "onGlobalLayout" to {view: View, args: ArrayList<Any> ->
-        val key = "createdGlobalLayout"
-        val result = getViewCache(view, key)
-        val isCreated = result != null
-        val f = (args [0]) as (View) -> Unit
-
-        if (! isCreated) {
-            view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    println("onglbolal")
-                    f(view)
-                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                }
-            })
-            cache(view, key, arrayListOf())
-        }
-    },
     "orientation" to {layout: View, args: ArrayList<Any> ->
         (layout as LinearLayout).orientation = args[0] as Int
     },
@@ -122,6 +105,22 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
         val f = args[0] as (View) -> Unit
         view.setOnClickListener { a0 ->
             f(a0)
+        }
+    },
+    "onGlobalLayout" to {view: View, args: ArrayList<Any> ->
+        val key = "createdGlobalLayout"
+        val result = getViewCache(view, key)
+        val isCreated = result != null
+        val f = (args [0]) as (View) -> Unit
+
+        if (! isCreated) {
+            view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    f(view)
+                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
+            cache(view, key, arrayListOf())
         }
     },
     "onTouch" to {view: View, args: ArrayList<Any> ->
