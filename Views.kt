@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import kotlin.math.max
+import kotlin.math.min
 
 fun realiseView(activity: Context, parent: ViewGroup, virtual: Virtual, index: Int): View {
     val view = virtual.cls(activity)
@@ -13,35 +14,52 @@ fun realiseView(activity: Context, parent: ViewGroup, virtual: Virtual, index: I
     return view
 }
 
+fun removeChild(view: View) {
+    val vg = (view.parent as? ViewGroup)
+    if (vg != null) {
+        vg.removeView(view)
+    }
+}
+
 fun removeChild(parentView: ViewGroup, childView: View) {
     parentView.removeView(childView)
     removeViewCache(childView)
 }
 
-fun findWithLeftOvers(realChildren: List<View>, virtualChildren: List<Virtual>) {
-
+fun reOrderChild(child: View, i: Int) {
+    val vg = (child.parent as? ViewGroup)
+    if (vg != null) {
+        vg.removeView(child)
+        vg.addView(child, min(i, vg.childCount))
+    }
 }
 
-fun pad(many: List<View?>, length: Int): List<View?> {
-    return (0..length-1).map {i ->
-        many[i]
+fun pop(many: MutableList<View>): View? {
+    if (many.size == 0){
+        return null
     }
+    val popped = many.get(0)
+    many.removeAt(0)
+    return popped
 }
 
 fun matchOrderOfRealAndVirtual(realChildren: List<View?>,
                                virtualChildren: List<Virtual>): List<View?> {
-    val newRealChildren = virtualChildren.map {vChild ->
-        realChildren.find {rChild ->
-            vChild.tag == rChild?.tag
+
+    val childrenHaveTags = virtualChildren.all {it.tag != ""}
+    if (childrenHaveTags) {
+        val newChildren = virtualChildren.mapIndexed { i, vChild ->
+            val foundChild = realChildren.find { rChild ->
+                vChild.tag != "" && vChild.tag == rChild?.tag
+            }
+            foundChild
         }
-    }
-    return newRealChildren.zip(pad(realChildren, newRealChildren.size)).map {(nrChild, rChild) ->
-        if (nrChild == null) {
-            rChild
-        } else {
-            nrChild
+        realChildren.filter {! newChildren.contains(it)}.forEach {
+            removeChild(it!!)
         }
+        return newChildren
     }
+    return realChildren
 }
 
 fun getChildren(viewGroup: ViewGroup): List<View> {
@@ -51,7 +69,7 @@ fun getChildren(viewGroup: ViewGroup): List<View> {
 }
 
 fun getChildren(viewGroup: ViewGroup, expectedLength: Int): List<View?> {
-    return (0..expectedLength).map {i ->
+    return (0..expectedLength-1).map {i ->
         viewGroup.getChildAt(i)
     }
 }
@@ -60,7 +78,6 @@ fun deleteExcessChildren(rootView: ViewGroup, virtuals: ArrayList<Virtual>) {
     val rsize: Int = rootView.childCount
     val vsize = virtuals.size
     val excessSize = max(rsize-vsize, 0)
-    //println("DELETE EXCESS ${virtuals.size} ${rsize-excessSize}..${rsize-1}")
     for (i in (rsize-excessSize)..(rsize-1)) {
         val child = rootView.getChildAt(i)
         // Child can be null when deleteExcessChildren has already run
@@ -72,7 +89,6 @@ fun deleteExcessChildren(rootView: ViewGroup, virtuals: ArrayList<Virtual>) {
 
 fun deleteExcessChildrenRecursively(rootView: ViewGroup, virtuals: ArrayList<Virtual>) {
     deleteExcessChildren(rootView, virtuals)
-    println("rotviw ${rootView} vsize ${virtuals.size} child ${rootView.childCount}")
     getChildren(rootView).forEachIndexed {i, child ->
         if (virtuals[i].children.size > 0) {
             deleteExcessChildrenRecursively(child as ViewGroup, virtuals[i].children)

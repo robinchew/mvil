@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import kotlin.collections.ArrayList
+import kotlin.math.min
 
 data class Virtual(val cls: (Context) -> View,
                    val tag: String = "",
@@ -22,15 +23,19 @@ fun buildTags(tags: List<String>): String {
 }
 
 fun render(activity: Activity, rootView: ViewGroup, virtuals: ArrayList<Virtual>, tag: String = "") {
-    getChildren(rootView, virtuals.size).zip(virtuals).forEachIndexed {i, (realChildOrNull, virtualChild) ->
+    val realChildren = matchOrderOfRealAndVirtual(
+        getChildren(rootView, virtuals.size),
+        virtuals)
+
+    realChildren.zip(virtuals).forEachIndexed {i, (realChildOrNull, virtualChild) ->
         val realChild: View = if (realChildOrNull == null) {
             realiseView(activity, rootView, virtualChild, i)
         } else {
+            reOrderChild(realChildOrNull, i)
             realChildOrNull
         }
-        val newTag = buildTags(listOf(tag, virtualChild.tag))
+        val newTag = virtualChild.tag
         val cachedTag = getViewCache(realChild, "tag")
-        // println("newtag ${newTag} cachedTag ${cachedTag}")
         if (cachedTag == null) {
             tag(newTag)(realChild)
         }
@@ -41,7 +46,7 @@ fun render(activity: Activity, rootView: ViewGroup, virtuals: ArrayList<Virtual>
             assert(
                 realChild is ViewGroup,
                 {"If a virtual node has children then its parent must be a ViewGroup."})
-            render(activity, realChild as ViewGroup, virtualChild.children, newTag);
+            render(activity, realChild as ViewGroup, virtualChild.children, "");
         }
     }
 }
