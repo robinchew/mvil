@@ -22,9 +22,9 @@ fun buildTags(tags: List<String>): String {
 }
 
 fun render(activity: Activity, rootView: ViewGroup, virtuals: ArrayList<Virtual>, tag: String = "") {
-    getChildren(rootView, virtuals.size).zip(virtuals).forEach {(realChildOrNull, virtualChild) ->
+    getChildren(rootView, virtuals.size).zip(virtuals).forEachIndexed {i, (realChildOrNull, virtualChild) ->
         val realChild: View = if (realChildOrNull == null) {
-            realiseView(activity, rootView, virtualChild)
+            realiseView(activity, rootView, virtualChild, i)
         } else {
             realChildOrNull
         }
@@ -33,11 +33,6 @@ fun render(activity: Activity, rootView: ViewGroup, virtuals: ArrayList<Virtual>
         // println("newtag ${newTag} cachedTag ${cachedTag}")
         if (cachedTag == null) {
             tag(newTag)(realChild)
-        }
-        else if (arrayListOf<String>(newTag) != cachedTag) {
-            // println("remove $realChild")
-            removeChild(rootView, realChild)
-            return
         }
         for (f in virtualChild.attrs) {
             f(realChild)
@@ -49,5 +44,4 @@ fun render(activity: Activity, rootView: ViewGroup, virtuals: ArrayList<Virtual>
             render(activity, realChild as ViewGroup, virtualChild.children, newTag);
         }
     }
-    deleteExcessChildren(rootView, virtuals)
 }
