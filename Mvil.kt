@@ -22,11 +22,10 @@ fun buildTags(tags: List<String>): String {
     return tags.joinToString("|")
 }
 
-fun render(activity: Activity, rootView: ViewGroup, virtuals: ArrayList<Virtual>, tag: String = "") {
+fun render(activity: Activity, rootView: ViewGroup, virtuals: ArrayList<Virtual>) {
     val realChildren = matchOrderOfRealAndVirtual(
         getChildren(rootView, virtuals.size),
         virtuals)
-
     realChildren.zip(virtuals).forEachIndexed {i, (realChildOrNull, virtualChild) ->
         val realChild: View = if (realChildOrNull == null) {
             realiseView(activity, rootView, virtualChild, i)
@@ -46,7 +45,7 @@ fun render(activity: Activity, rootView: ViewGroup, virtuals: ArrayList<Virtual>
             assert(
                 realChild is ViewGroup,
                 {"If a virtual node has children then its parent must be a ViewGroup."})
-            render(activity, realChild as ViewGroup, virtualChild.children, "");
+            render(activity, realChild as ViewGroup, virtualChild.children);
         }
     }
 }

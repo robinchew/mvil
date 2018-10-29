@@ -45,7 +45,6 @@ fun pop(many: MutableList<View>): View? {
 
 fun matchOrderOfRealAndVirtual(realChildren: List<View?>,
                                virtualChildren: List<Virtual>): List<View?> {
-
     val childrenHaveTags = virtualChildren.all {it.tag != ""}
     if (childrenHaveTags) {
         val newChildren = virtualChildren.mapIndexed { i, vChild ->
@@ -55,6 +54,8 @@ fun matchOrderOfRealAndVirtual(realChildren: List<View?>,
             foundChild
         }
         realChildren.filter {! newChildren.contains(it)}.forEach {
+            // This is where child views are removed when tagged views
+            // disappear.
             removeChild(it!!)
         }
         return newChildren
@@ -82,7 +83,6 @@ fun deleteExcessChildren(rootView: ViewGroup, virtuals: ArrayList<Virtual>) {
         val child = rootView.getChildAt(i)
         // Child can be null when deleteExcessChildren has already run
         // for parent's children
-
         removeChild(rootView, child)
     }
 }
@@ -98,7 +98,10 @@ fun deleteExcessChildrenRecursively(rootView: ViewGroup, virtuals: ArrayList<Vir
 
 class RenderView(val activity: Activity): FrameLayout(activity) {
     fun sync(virtual: Virtual) {
-        render(activity, this, arrayListOf(virtual), "")
+        render(activity, this, arrayListOf(virtual))
+
+        // This is where excess child views are removed when the views have
+        // NO tags
         deleteExcessChildrenRecursively(this, arrayListOf(virtual))
     }
 }
