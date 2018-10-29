@@ -43,24 +43,25 @@ fun pop(many: MutableList<View>): View? {
     return popped
 }
 
-fun matchOrderOfRealAndVirtual(realChildren: List<View?>,
+fun matchOrderOfRealAndVirtual(parentView: ViewGroup,
                                virtualChildren: List<Virtual>): List<View?> {
     val childrenHaveTags = virtualChildren.all {it.tag != ""}
     if (childrenHaveTags) {
-        val newChildren = virtualChildren.mapIndexed { i, vChild ->
-            val foundChild = realChildren.find { rChild ->
+        val allChildren = getChildren(parentView)
+        val taggedChildren = virtualChildren.mapIndexed { i, vChild ->
+            val foundChild = allChildren.find { rChild ->
                 vChild.tag != "" && vChild.tag == rChild?.tag
             }
             foundChild
         }
-        realChildren.filter {! newChildren.contains(it)}.forEach {
+        allChildren.filter {! taggedChildren.contains(it)}.forEach {
             // This is where child views are removed when tagged views
             // disappear.
             removeChild(it!!)
         }
-        return newChildren
+        return taggedChildren
     }
-    return realChildren
+    return getChildren(parentView, virtualChildren.size)
 }
 
 fun getChildren(viewGroup: ViewGroup): List<View> {

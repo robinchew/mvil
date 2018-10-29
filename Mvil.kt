@@ -24,7 +24,7 @@ fun buildTags(tags: List<String>): String {
 
 fun render(activity: Activity, rootView: ViewGroup, virtuals: ArrayList<Virtual>) {
     val realChildren = matchOrderOfRealAndVirtual(
-        getChildren(rootView, virtuals.size),
+        rootView,
         virtuals)
     realChildren.zip(virtuals).forEachIndexed {i, (realChildOrNull, virtualChild) ->
         val realChild: View = if (realChildOrNull == null) {
