@@ -61,6 +61,9 @@ fun matchOrderOfRealAndVirtual(parentView: ViewGroup,
         }
         return taggedChildren
     }
+    // This is where excess child views are removed when the views have
+    // NO tags
+    deleteExcessChildren(parentView, virtualChildren)
     return getChildren(parentView, virtualChildren.size)
 }
 
@@ -76,7 +79,7 @@ fun getChildren(viewGroup: ViewGroup, expectedLength: Int): List<View?> {
     }
 }
 
-fun deleteExcessChildren(rootView: ViewGroup, virtuals: ArrayList<Virtual>) {
+fun deleteExcessChildren(rootView: ViewGroup, virtuals: List<Virtual>) {
     val rsize: Int = rootView.childCount
     val vsize = virtuals.size
     val excessSize = max(rsize-vsize, 0)
@@ -88,21 +91,8 @@ fun deleteExcessChildren(rootView: ViewGroup, virtuals: ArrayList<Virtual>) {
     }
 }
 
-fun deleteExcessChildrenRecursively(rootView: ViewGroup, virtuals: ArrayList<Virtual>) {
-    deleteExcessChildren(rootView, virtuals)
-    getChildren(rootView).forEachIndexed {i, child ->
-        if (virtuals[i].children.size > 0) {
-            deleteExcessChildrenRecursively(child as ViewGroup, virtuals[i].children)
-        }
-    }
-}
-
 class RenderView(val activity: Activity): FrameLayout(activity) {
     fun sync(virtual: Virtual) {
         render(activity, this, arrayListOf(virtual))
-
-        // This is where excess child views are removed when the views have
-        // NO tags
-        deleteExcessChildrenRecursively(this, arrayListOf(virtual))
     }
 }
