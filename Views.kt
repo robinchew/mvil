@@ -43,8 +43,8 @@ fun pop(many: MutableList<View>): View? {
     return popped
 }
 
-fun matchOrderOfRealAndVirtual(parentView: ViewGroup,
-                               virtualChildren: List<Virtual>): List<View?> {
+fun orderAndCullViews(parentView: ViewGroup,
+                      virtualChildren: List<Virtual>): List<View?> {
     val childrenHaveTags = virtualChildren.all {it.tag != ""}
     if (childrenHaveTags) {
         val allChildren = getChildren(parentView)
