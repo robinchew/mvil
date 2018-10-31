@@ -83,6 +83,9 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     },
     "innerGravity" to {view: View, args: ArrayList<Any> ->
         //view.grav = args[0] as Int
+        if (view is TextView) {
+            view.gravity = args[0] as Int
+        }
         (view as LinearLayout).gravity = args[0] as Int
     },
     "outerGravity" to {view: View, args: ArrayList<Any> ->
