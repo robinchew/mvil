@@ -81,7 +81,11 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
             view.isFocusableInTouchMode = args[0] as Boolean
         }
     },
-    "layoutGravity" to {view: View, args: ArrayList<Any> ->
+    "innerGravity" to {view: View, args: ArrayList<Any> ->
+        //view.grav = args[0] as Int
+        (view as LinearLayout).gravity = args[0] as Int
+    },
+    "outerGravity" to {view: View, args: ArrayList<Any> ->
         val params = view.layoutParams as LinearLayout.LayoutParams
         params.gravity = args[0] as Int
     },
@@ -231,8 +235,11 @@ fun focusable(b: Boolean): AttrSetter {
 fun focusableInTouchMode(b: Boolean): AttrSetter {
     return attr("focusableInTouchMode")(arrayListOf(b))
 }
-fun layoutGravity(i: Int): AttrSetter {
-    return attr("layoutGravity")(arrayListOf(i))
+fun innerGravity(i: Int): AttrSetter {
+    return attr("innerGravity")(arrayListOf(i))
+}
+fun outerGravity(i: Int): AttrSetter {
+    return attr("outerGravity")(arrayListOf(i))
 }
 fun margin(all: Int): AttrSetter {
     return attr("margin")(arrayListOf(all, all, all, all))
