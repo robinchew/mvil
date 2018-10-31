@@ -2,6 +2,7 @@ package mvil
 
 import android.os.Build
 import android.graphics.Color
+import android.support.design.widget.CoordinatorLayout
 import android.view.*
 import android.widget.CompoundButton
 import android.widget.LinearLayout
@@ -79,15 +80,21 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
         }
     },
     "innerGravity" to {view: View, args: ArrayList<Any> ->
-        //view.grav = args[0] as Int
-        if (view is TextView) {
-            view.gravity = args[0] as Int
+        when (view) {
+            is TextView ->
+                view.gravity = args[0] as Int
+            is LinearLayout ->
+                view.gravity = args[0] as Int
         }
-        (view as LinearLayout).gravity = args[0] as Int
     },
     "outerGravity" to {view: View, args: ArrayList<Any> ->
-        val params = view.layoutParams as LinearLayout.LayoutParams
-        params.gravity = args[0] as Int
+        val params = view.layoutParams
+        when (params) {
+            is CoordinatorLayout.LayoutParams ->
+                params.gravity = args[0] as Int
+            is LinearLayout.LayoutParams ->
+                params.gravity = args[0] as Int
+        }
     },
     "margin" to  {v: View, args: ArrayList<Any> ->
         val (l, r, t, b) = args as ArrayList<Int>
