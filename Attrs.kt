@@ -85,6 +85,8 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
                 view.gravity = args[0] as Int
             is LinearLayout ->
                 view.gravity = args[0] as Int
+            else ->
+                throw IllegalArgumentException("innerGravity for ${view} is unsupported");
         }
     },
     "outerGravity" to {view: View, args: ArrayList<Any> ->
@@ -94,6 +96,8 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
                 params.gravity = args[0] as Int
             is LinearLayout.LayoutParams ->
                 params.gravity = args[0] as Int
+            else ->
+                throw IllegalArgumentException("innerGravity for ${view} is unsupported");
         }
     },
     "margin" to  {v: View, args: ArrayList<Any> ->
