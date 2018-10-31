@@ -46,9 +46,6 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     "onCrup" to {view: View, args: ArrayList<Any> ->
         (args[0] as (View) -> Unit)(view)
     },
-    "orientation" to {layout: View, args: ArrayList<Any> ->
-        (layout as LinearLayout).orientation = args[0] as Int
-    },
     "checked" to {view: View, args: ArrayList<Any> ->
         (view as CompoundButton).isChecked = args[0] as Boolean
     },
@@ -135,6 +132,9 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
         view.setOnTouchListener {view, motionEvent ->
             f(view, motionEvent)
         }
+    },
+    "orientation" to {layout: View, args: ArrayList<Any> ->
+        (layout as LinearLayout).orientation = args[0] as Int
     },
     "size" to {v: View, args: ArrayList<Any> ->
         val (w, h) = args as ArrayList<Int>
