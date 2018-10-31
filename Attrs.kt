@@ -149,6 +149,9 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     "text" to {v: View, args: ArrayList<Any> ->
         (v as TextView).text = args[0] as String
     },
+    "textSize" to {v: View, args: ArrayList<Any> ->
+        (v as TextView).textSize = args[0] as Float
+    },
     "weight" to {view: View, args: ArrayList<Any> ->
         val params = view.layoutParams as LinearLayout.LayoutParams
         params.weight = args[0] as Float
@@ -276,6 +279,9 @@ fun tag(s: String): AttrSetter {
 }
 fun text(s: String): AttrSetter {
     return attr("text")(arrayListOf(s))
+}
+fun textSize(f: Float): AttrSetter {
+    return attr("textSize")(arrayListOf(f))
 }
 fun weight(v: Float): AttrSetter {
     return attr("weight")(arrayListOf(v))
