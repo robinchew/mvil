@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.support.design.widget.CoordinatorLayout
 import android.view.*
 import android.widget.CompoundButton
+import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import org.jetbrains.anko.backgroundColor
@@ -59,6 +60,16 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     "clipToPadding" to {view: View, args: ArrayList<Any> ->
         (view as ViewGroup).clipToPadding = args[0] as Boolean
     },
+    "columnCount" to {layout: View, args: ArrayList<Any> ->
+        (layout as GridLayout).columnCount = args[0] as Int
+    },
+    "columnFillWeight" to {layout: View, args: ArrayList<Any> ->
+        val params = layout.layoutParams as GridLayout.LayoutParams
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            params.columnSpec = GridLayout.spec(
+                GridLayout.UNDEFINED, GridLayout.FILL, args[0] as Float)
+        }
+    },
     "elevation" to {view: View, args: ArrayList<Any> ->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             view.elevation = args[0] as Float
@@ -85,17 +96,6 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
                 view.gravity = args[0] as Int
             is LinearLayout ->
                 view.gravity = args[0] as Int
-            else ->
-                throw IllegalArgumentException("innerGravity for ${view} is unsupported");
-        }
-    },
-    "outerGravity" to {view: View, args: ArrayList<Any> ->
-        val params = view.layoutParams
-        when (params) {
-            is CoordinatorLayout.LayoutParams ->
-                params.gravity = args[0] as Int
-            is LinearLayout.LayoutParams ->
-                params.gravity = args[0] as Int
             else ->
                 throw IllegalArgumentException("innerGravity for ${view} is unsupported");
         }
@@ -147,6 +147,29 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     "orientation" to {layout: View, args: ArrayList<Any> ->
         (layout as LinearLayout).orientation = args[0] as Int
     },
+    "outerGravity" to {view: View, args: ArrayList<Any> ->
+        val params = view.layoutParams
+        when (params) {
+            is CoordinatorLayout.LayoutParams ->
+                params.gravity = args[0] as Int
+            is LinearLayout.LayoutParams ->
+                params.gravity = args[0] as Int
+            is GridLayout.LayoutParams ->
+                params.setGravity(args[0] as Int)
+            else ->
+                throw IllegalArgumentException("outerGravity for $params of ${view} is unsupported");
+        }
+    },
+    "rowCount" to {layout: View, args: ArrayList<Any> ->
+        (layout as GridLayout).rowCount = args[0] as Int
+    },
+    "rowFillWeight" to {layout: View, args: ArrayList<Any> ->
+        val params = layout.layoutParams as GridLayout.LayoutParams
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            params.rowSpec = GridLayout.spec(
+                GridLayout.UNDEFINED, GridLayout.FILL, args[0] as Float)
+        }
+    },
     "size" to {v: View, args: ArrayList<Any> ->
         val (w, h) = args as ArrayList<Int>
         val p = v.getLayoutParams()
@@ -164,8 +187,16 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
         (v as TextView).textSize = args[0] as Float
     },
     "weight" to {view: View, args: ArrayList<Any> ->
-        val params = view.layoutParams as LinearLayout.LayoutParams
-        params.weight = args[0] as Float
+        val params = view.layoutParams
+
+        when (params) {
+            is LinearLayout.LayoutParams ->
+                params.weight = args[0] as Float
+            // is GridLayout.LayoutParams ->
+            //    params.weight = args[0] as Float
+            else ->
+                throw IllegalArgumentException("weight for ${params} of ${view} is unsupported");
+        }
     },
     "z" to {view: View, args: ArrayList<Any> ->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -243,6 +274,12 @@ fun clipChildren(b: Boolean): AttrSetter {
 fun clipToPadding(b: Boolean): AttrSetter {
     return attr("clipToPadding")(arrayListOf(b))
 }
+fun columnCount(i: Int): AttrSetter {
+    return attr("columnCount")(arrayListOf(i))
+}
+fun columnFillWeight(f: Float): AttrSetter {
+    return attr("columnFillWeight")(arrayListOf(f))
+}
 fun elevation(v: Float): AttrSetter {
     return attr("elevation")(arrayListOf(v))
 }
@@ -281,6 +318,12 @@ fun padding(all: Int): AttrSetter {
 }
 fun orientation(i: Int): AttrSetter {
     return attr("orientation")(arrayListOf(i))
+}
+fun rowCount(i: Int): AttrSetter {
+    return attr("rowCount")(arrayListOf(i))
+}
+fun rowFillWeight(f: Float): AttrSetter {
+    return attr("rowFillWeight")(arrayListOf(f))
 }
 fun size(w: Int, h: Int): AttrSetter {
     return attr("size")(arrayListOf(w, h))
