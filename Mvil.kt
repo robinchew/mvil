@@ -4,25 +4,22 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import kotlin.collections.ArrayList
-import kotlin.math.min
 
 data class Virtual(val cls: (Context) -> View,
                    val tag: String = "",
-                   val attrs: ArrayList<AttrSetter> = arrayListOf(),
-                   val children: ArrayList<Virtual> = arrayListOf()){
+                   val attrs: List<AttrSetter> = listOf(),
+                   val children: List<Virtual> = listOf()){
 
     constructor(cls: (Context) -> View,
-                attrs: ArrayList<AttrSetter> = arrayListOf(),
-                children: ArrayList<Virtual> = arrayListOf()) : this(cls, "", attrs, children)
+                attrs: List<AttrSetter> = listOf(),
+                children: List<Virtual> = listOf()) : this(cls, "", attrs, children)
 }
 
 fun buildTags(tags: List<String>): String {
     return tags.joinToString("|")
 }
 
-fun render(activity: Activity, rootView: ViewGroup, virtuals: ArrayList<Virtual>) {
+fun render(activity: Activity, rootView: ViewGroup, virtuals: List<Virtual>) {
     val realChildren = orderAndCullViews(
         rootView,
         virtuals)
