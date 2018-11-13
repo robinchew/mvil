@@ -3,7 +3,14 @@ package mvil
 import android.os.Build
 import android.graphics.Color
 import android.support.design.widget.CoordinatorLayout
-import android.view.*
+
+import android.view.Gravity
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+
+import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.GridLayout
 import android.widget.LinearLayout
@@ -34,6 +41,13 @@ fun getViewCache(view: View, attrName: String): ArrayList<Any>? {
 
 fun removeViewCache(view: View) {
     cachedAttrValues.remove(view)
+}
+
+fun getViewState(view: View, attr: String): ArrayList<Any>? {
+    return when (attr) {
+        "checked" -> arrayListOf((view as CheckBox).isChecked)
+        else -> null
+    }
 }
 
 private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
@@ -214,10 +228,14 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     it.key to {args: ArrayList<Any> ->
         {view: View ->
             val lastArgs = getViewCache(view, it.key)
-            if (lastArgs != args) {
+            if (lastArgs != args || (getViewState(view, it.key) ?: args) != args) {
+                // This is where state is checked to determine if
+                // an attribute update is necessary.
+                // Not only is the current state is checked with the previous state,
+                // for a view like CheckBox, the view attribute state is checked with
+                // the current state as well.
                 f(view, args)
                 cache(view, it.key, args)
-                // println("change ${it.key} $lastArgs -> ${args}")
             }
         }
     }
