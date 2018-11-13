@@ -63,11 +63,13 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     "columnCount" to {layout: View, args: ArrayList<Any> ->
         (layout as GridLayout).columnCount = args[0] as Int
     },
-    "columnFillWeight" to {layout: View, args: ArrayList<Any> ->
+    "columnAlignmentWeight" to {layout: View, args: ArrayList<Any> ->
         val params = layout.layoutParams as GridLayout.LayoutParams
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             params.columnSpec = GridLayout.spec(
-                GridLayout.UNDEFINED, GridLayout.FILL, args[0] as Float)
+                GridLayout.UNDEFINED,
+                args[0] as GridLayout.Alignment,
+                args[1] as Float)
         }
     },
     "elevation" to {view: View, args: ArrayList<Any> ->
@@ -277,8 +279,8 @@ fun clipToPadding(b: Boolean): AttrSetter {
 fun columnCount(i: Int): AttrSetter {
     return attr("columnCount")(arrayListOf(i))
 }
-fun columnFillWeight(f: Float): AttrSetter {
-    return attr("columnFillWeight")(arrayListOf(f))
+fun columnAlignmentWeight(alignment: GridLayout.Alignment, f: Float): AttrSetter {
+    return attr("columnAlignmentWeight")(arrayListOf(alignment, f))
 }
 fun elevation(v: Float): AttrSetter {
     return attr("elevation")(arrayListOf(v))
