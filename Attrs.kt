@@ -16,6 +16,8 @@ import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.colorAttr
+import org.jetbrains.anko.textColor
 import java.lang.Exception
 
 typealias AttrSetter = (View) -> Unit
@@ -61,6 +63,10 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     },
     "onCrup" to {view: View, args: ArrayList<Any> ->
         (args[0] as (View) -> Unit)(view)
+    },
+    "backgroundColorHex" to {view: View, args: ArrayList<Any> ->
+        val hex = args[0] as String
+        view.backgroundColor = Color.parseColor(hex)
     },
     "checked" to {view: View, args: ArrayList<Any> ->
         (view as CompoundButton).isChecked = args[0] as Boolean
@@ -199,6 +205,10 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     "text" to {v: View, args: ArrayList<Any> ->
         (v as TextView).text = args[0] as String
     },
+    "textColorHex" to {view: View, args: ArrayList<Any> ->
+        val hex = args[0] as String
+        (view as TextView).textColor = Color.parseColor(hex)
+    },
     "textSize" to {v: View, args: ArrayList<Any> ->
         (v as TextView).textSize = args[0] as Float
     },
@@ -218,10 +228,6 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             view.z = args[0] as Float
         }
-    },
-    "backgroundColorHex" to {view: View, args: ArrayList<Any> ->
-        val hex = args[0] as String
-        view.backgroundColor = Color.parseColor(hex)
     }
 ).entries.associate {
     val f = it.value
@@ -321,6 +327,9 @@ fun margin(all: Int): AttrSetter {
 fun margin(horizontal: Int, vertical: Int): AttrSetter {
     return attr("margin")(arrayListOf(horizontal, vertical, horizontal, vertical))
 }
+fun margin(l: Int, r: Int, t: Int, b: Int): AttrSetter {
+    return attr("margin")(arrayListOf(l, r, t, b))
+}
 fun onClick(f: AttrSetter): AttrSetter {
     return attr("onClick")(arrayListOf(f))
 }
@@ -329,6 +338,9 @@ fun onGlobalLayout(f: AttrSetter): AttrSetter {
 }
 fun onTouch(f: (View, MotionEvent) -> Boolean): AttrSetter {
     return attr("onTouch")(arrayListOf(f))
+}
+fun padding(l: Int, r: Int, t: Int, b: Int): AttrSetter {
+    return attr("padding")(arrayListOf(l, r, t, b))
 }
 fun padding(horizontal: Int, vertical: Int): AttrSetter {
     return attr("padding")(arrayListOf(horizontal, vertical, horizontal, vertical))
@@ -353,6 +365,9 @@ fun tag(s: String): AttrSetter {
 }
 fun text(s: String): AttrSetter {
     return attr("text")(arrayListOf(s))
+}
+fun textColorHex(s: String): AttrSetter {
+    return attr("textColorHex")(arrayListOf(s))
 }
 fun textSize(f: Float): AttrSetter {
     return attr("textSize")(arrayListOf(f))
