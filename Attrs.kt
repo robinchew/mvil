@@ -3,6 +3,7 @@ package mvil
 import android.content.res.ColorStateList
 import android.os.Build
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 
@@ -117,6 +118,14 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     "focusableInTouchMode" to {view: View, args: ArrayList<Any> ->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             view.isFocusableInTouchMode = args[0] as Boolean
+        }
+    },
+    "imageResource" to { view: View, args: ArrayList<Any> ->
+        when (view) {
+            is FloatingActionButton ->
+                view.setImageResource(args[0] as Int)
+            else ->
+                throw IllegalArgumentException("imageResource for ${view} is unsupported");
         }
     },
     "innerGravity" to {view: View, args: ArrayList<Any> ->
@@ -321,6 +330,9 @@ fun focusable(b: Boolean): AttrSetter {
 }
 fun focusableInTouchMode(b: Boolean): AttrSetter {
     return attr("focusableInTouchMode")(arrayListOf(b))
+}
+fun imageResource(i: Int): AttrSetter {
+    return attr("imageResource")(arrayListOf(i))
 }
 fun innerGravity(i: Int): AttrSetter {
     return attr("innerGravity")(arrayListOf(i))
