@@ -1,8 +1,10 @@
 package mvil
 
+import android.content.res.ColorStateList
 import android.os.Build
 import android.graphics.Color
 import android.support.design.widget.CoordinatorLayout
+import android.support.design.widget.FloatingActionButton
 
 import android.view.Gravity
 import android.view.MotionEvent
@@ -66,7 +68,12 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     },
     "backgroundColorHex" to {view: View, args: ArrayList<Any> ->
         val hex = args[0] as String
-        view.backgroundColor = Color.parseColor(hex)
+        when (view) {
+            is FloatingActionButton ->
+                view.backgroundTintList = ColorStateList.valueOf(Color.parseColor(hex))
+            else ->
+                view.backgroundColor = Color.parseColor(hex)
+        }
     },
     "checked" to {view: View, args: ArrayList<Any> ->
         (view as CompoundButton).isChecked = args[0] as Boolean
