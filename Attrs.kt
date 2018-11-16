@@ -19,7 +19,6 @@ import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import org.jetbrains.anko.backgroundColor
-import org.jetbrains.anko.colorAttr
 import org.jetbrains.anko.textColor
 import java.lang.Exception
 
@@ -190,6 +189,14 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
         when (params) {
             is CoordinatorLayout.LayoutParams ->
                 params.gravity = args[0] as Int
+            is RelativeLayout.LayoutParams -> {
+                val alignment = args[0] as Int
+                if (alignment == Gravity.CENTER) {
+                    params.centerHorizontally()
+                } else {
+                    throw IllegalArgumentException("outerGravity with $params of ${view} is unsupported");
+                }
+            }
             is LinearLayout.LayoutParams ->
                 params.gravity = args[0] as Int
             is GridLayout.LayoutParams ->
