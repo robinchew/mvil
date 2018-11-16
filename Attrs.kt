@@ -87,6 +87,9 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     "clipToPadding" to {view: View, args: ArrayList<Any> ->
         (view as ViewGroup).clipToPadding = args[0] as Boolean
     },
+    "colorFilterHex" to {view: View, args: ArrayList<Any> ->
+        (view as ImageButton).setColorFilter(Color.parseColor(args[0] as String))
+    },
     "columnCount" to {layout: View, args: ArrayList<Any> ->
         (layout as GridLayout).columnCount = args[0] as Int
     },
@@ -304,6 +307,10 @@ fun clipChildren(b: Boolean): AttrSetter {
 }
 fun clipToPadding(b: Boolean): AttrSetter {
     return attr("clipToPadding")(arrayListOf(b))
+}
+fun colorFilterHex(s: String): AttrSetter {
+    // https://stackoverflow.com/a/11275373
+    return attr("colorFilterHex")(arrayListOf(s))
 }
 fun columnCount(i: Int): AttrSetter {
     return attr("columnCount")(arrayListOf(i))
