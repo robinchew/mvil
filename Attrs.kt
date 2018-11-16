@@ -280,22 +280,6 @@ val FILL = ViewGroup.LayoutParams.MATCH_PARENT
 val MATCH = ViewGroup.LayoutParams.MATCH_PARENT
 val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
 
-// gravity constants
-val TOP = Gravity.TOP
-val BOTTOM = Gravity.BOTTOM
-val LEFT = Gravity.LEFT
-val RIGHT = Gravity.RIGHT
-val CENTER_VERTICAL = Gravity.CENTER_VERTICAL
-val GROW_VERTICAL = Gravity.FILL_VERTICAL
-val CENTER_HORIZONTAL = Gravity.CENTER_HORIZONTAL
-val GROW_HORIZONTAL = Gravity.FILL_HORIZONTAL
-val CENTER = CENTER_VERTICAL or CENTER_HORIZONTAL
-val GROW = GROW_VERTICAL or GROW_HORIZONTAL
-val CLIP_VERTICAL = Gravity.CLIP_VERTICAL
-val CLIP_HORIZONTAL = Gravity.CLIP_HORIZONTAL
-val START = Gravity.START
-val END = Gravity.END
-
 fun attr(key: String): (ArrayList<Any>) -> AttrSetter {
     val f = attrs.get(key)
     if (f != null) {
