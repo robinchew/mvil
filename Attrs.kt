@@ -188,14 +188,6 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
         when (params) {
             is CoordinatorLayout.LayoutParams ->
                 params.gravity = args[0] as Int
-            is RelativeLayout.LayoutParams -> {
-                val alignment = args[0] as Int
-                if (alignment == Gravity.CENTER) {
-                    params.centerHorizontally()
-                } else {
-                    throw IllegalArgumentException("outerGravity with $params of ${view} is unsupported");
-                }
-            }
             is LinearLayout.LayoutParams ->
                 params.gravity = args[0] as Int
             is GridLayout.LayoutParams ->
@@ -213,6 +205,10 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
             params.rowSpec = GridLayout.spec(
                 GridLayout.UNDEFINED, GridLayout.FILL, args[0] as Float)
         }
+    },
+    "rule" to {view: View, args: ArrayList<Any> ->
+        val params = view.layoutParams as RelativeLayout.LayoutParams
+        params.addRule(args[0] as Int)
     },
     "size" to {v: View, args: ArrayList<Any> ->
         val (w, h) = args as ArrayList<Int>
@@ -381,6 +377,9 @@ fun rowCount(i: Int): AttrSetter {
 }
 fun rowFillWeight(f: Float): AttrSetter {
     return attr("rowFillWeight")(arrayListOf(f))
+}
+fun rule(i: Int): AttrSetter {
+    return attr("rule")(arrayListOf(i))
 }
 fun size(w: Int, h: Int): AttrSetter {
     return attr("size")(arrayListOf(w, h))
