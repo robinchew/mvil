@@ -17,9 +17,8 @@ import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.GridLayout
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
-import org.jetbrains.anko.backgroundColor
-import org.jetbrains.anko.textColor
 import java.lang.Exception
 
 typealias AttrSetter = (View) -> Unit
@@ -72,7 +71,7 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
             is FloatingActionButton ->
                 view.backgroundTintList = ColorStateList.valueOf(Color.parseColor(hex))
             else ->
-                view.backgroundColor = Color.parseColor(hex)
+                view.setBackgroundColor(Color.parseColor(hex))
         }
     },
     "checked" to {view: View, args: ArrayList<Any> ->
@@ -230,7 +229,7 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     },
     "textColorHex" to {view: View, args: ArrayList<Any> ->
         val hex = args[0] as String
-        (view as TextView).textColor = Color.parseColor(hex)
+        (view as TextView).setTextColor(Color.parseColor(hex))
     },
     "textSize" to {v: View, args: ArrayList<Any> ->
         (v as TextView).textSize = args[0] as Float
