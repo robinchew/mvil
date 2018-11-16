@@ -16,6 +16,7 @@ import android.view.ViewTreeObserver
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.GridLayout
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -121,6 +122,8 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     "imageResource" to { view: View, args: ArrayList<Any> ->
         when (view) {
             is FloatingActionButton ->
+                view.setImageResource(args[0] as Int)
+            is ImageButton ->
                 view.setImageResource(args[0] as Int)
             else ->
                 throw IllegalArgumentException("imageResource for ${view} is unsupported");
