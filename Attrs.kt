@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.os.Build
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.PaintDrawable
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 
@@ -101,6 +102,12 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
                 args[0] as GridLayout.Alignment,
                 args[1] as Float)
         }
+    },
+    "cornerRadius" to {view: View, args: ArrayList<Any> ->
+        // https://stackoverflow.com/a/19152013
+        val paint = PaintDrawable()
+        paint.setCornerRadius(args[0] as Float)
+        view.setBackground(paint)
     },
     "elevation" to {view: View, args: ArrayList<Any> ->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -317,6 +324,9 @@ fun columnCount(i: Int): AttrSetter {
 }
 fun columnAlignmentWeight(alignment: GridLayout.Alignment, f: Float): AttrSetter {
     return attr("columnAlignmentWeight")(arrayListOf(alignment, f))
+}
+fun cornerRadius(f: Float): AttrSetter {
+    return attr("cornerRadius")(arrayListOf(f))
 }
 fun elevation(v: Float): AttrSetter {
     return attr("elevation")(arrayListOf(v))
