@@ -64,6 +64,13 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
             cache(view, "created", arrayListOf())
         }
     },
+    "onUpdate" to {view: View, args: ArrayList<Any> ->
+        val result = getViewCache(view, "created")
+        val isCreated = result != null
+        if (isCreated) {
+            (args[0] as (View) -> Unit)(view)
+        }
+    },
     "onCrup" to {view: View, args: ArrayList<Any> ->
         (args[0] as (View) -> Unit)(view)
     },
@@ -265,11 +272,11 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
     it.key to {args: ArrayList<Any> ->
         {view: View ->
             val lastArgs = getViewCache(view, it.key)
-            if (lastArgs != args || (getViewState(view, it.key) ?: args) != args) {
+            if (lastArgs != args || (getViewState(view, it.key) ?: args) != args || listOf("onUpdate", "onCrup").contains(it.key)) {
                 // This is where state is checked to determine if
                 // an attribute update is necessary.
                 // Not only is the current state is checked with the previous state,
-                // for a view like CheckBox, the view attribute state is checked with
+                // for a view like CheckBox, the 'view attribute' state is checked with
                 // the current state as well.
                 f(view, args)
                 cache(view, it.key, args)
@@ -285,7 +292,9 @@ fun onCrup(f: (View) -> Unit): AttrSetter  {
 fun onCreate(f: (View) -> Unit): AttrSetter  {
     return attr("onCreate")(arrayListOf(f))
 }
-
+fun onUpdate(f: (View) -> Unit): AttrSetter  {
+    return attr("onUpdate")(arrayListOf(f))
+}
 // ANDROID ATTRIBUTES
 
 // weight constants
