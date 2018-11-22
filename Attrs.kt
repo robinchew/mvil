@@ -285,7 +285,6 @@ private val attrsMap: Map<String, (ArrayList<Any>) -> ViewFunction> = mapOf(
 }
 
 // weight constants
-val FILL = ViewGroup.LayoutParams.MATCH_PARENT
 val MATCH = ViewGroup.LayoutParams.MATCH_PARENT
 val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
 
