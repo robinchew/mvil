@@ -7,11 +7,11 @@ import android.view.ViewGroup
 
 data class Virtual(val cls: (Context) -> View,
                    val tag: String = "",
-                   val attrs: List<ViewFunction> = listOf(),
+                   val attrs: List<KeyViewFunction> = listOf(),
                    val children: List<Virtual> = listOf()){
 
     constructor(cls: (Context) -> View,
-                attrs: List<ViewFunction> = listOf(),
+                attrs: List<KeyViewFunction> = listOf(),
                 children: List<Virtual> = listOf()) : this(cls, "", attrs, children)
 }
 
@@ -33,9 +33,10 @@ fun render(activity: Activity, rootView: ViewGroup, virtuals: List<Virtual>) {
         val newTag = virtualChild.tag
         val cachedTag = getViewCache(realChild, "tag")
         if (cachedTag == null) {
-            tag(newTag)(realChild)
+            val (key, tagF) = tag(newTag)
+            tagF(realChild)
         }
-        for (f in virtualChild.attrs) {
+        for ((key, f) in virtualChild.attrs) {
             f(realChild)
         }
         if (virtualChild.children.size > 0 || ((realChild as? ViewGroup)?.childCount ?: 0) > 0) {
