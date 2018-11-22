@@ -63,24 +63,6 @@ private class SingleTapConfirm : SimpleOnGestureListener() {
 }
 
 private val attrsMap: Map<String, (ArrayList<Any>) -> ViewFunction> = mapOf(
-    "onCreate" to {view: View, args: ArrayList<Any> ->
-        val result = getViewCache(view, "created")
-        val isCreated = result != null
-        if (! isCreated) {
-            (args[0] as (View) -> Unit)(view)
-            cache(view, "created", arrayListOf())
-        }
-    },
-    "onUpdate" to {view: View, args: ArrayList<Any> ->
-        val result = getViewCache(view, "created")
-        val isCreated = result != null
-        if (isCreated) {
-            (args[0] as (View) -> Unit)(view)
-        }
-    },
-    "onCrup" to {view: View, args: ArrayList<Any> ->
-        (args[0] as (View) -> Unit)(view)
-    },
     "backgroundColorHex" to {view: View, args: ArrayList<Any> ->
         val hex = args[0] as String
         when (view) {
@@ -310,13 +292,13 @@ fun attr(key: String, args: ArrayList<Any>): KeyViewFunction {
 // MVIL ATTRIBUTES
 
 fun onCrup(f: (View) -> Unit): KeyViewFunction  {
-    return attr("onCrup", arrayListOf(f))
+    return Pair("onCrup", f)
 }
 fun onCreate(f: (View) -> Unit): KeyViewFunction  {
-    return attr("onCreate", arrayListOf(f))
+    return Pair("onCreate", f)
 }
 fun onUpdate(f: (View) -> Unit): KeyViewFunction  {
-    return attr("onUpdate", arrayListOf(f))
+    return Pair("onUpdate", f)
 }
 // ANDROID ATTRIBUTES
 
