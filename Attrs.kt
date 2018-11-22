@@ -289,12 +289,10 @@ val FILL = ViewGroup.LayoutParams.MATCH_PARENT
 val MATCH = ViewGroup.LayoutParams.MATCH_PARENT
 val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
 
-fun attr(key: String): (ArrayList<Any>) -> KeyViewFunction {
-    val attr = attrsMap.get(key)
-    if (attr != null) {
-        return {args ->
-            Pair(key, attr(args))
-        }
+fun attr(key: String, args: ArrayList<Any>): KeyViewFunction {
+    val attrMap = attrsMap.get(key)
+    if (attrMap != null) {
+        return Pair(key, attrMap(args))
     }
     throw Exception("Mvil did not implement '${key}'. Please complain.")
 }
@@ -302,119 +300,119 @@ fun attr(key: String): (ArrayList<Any>) -> KeyViewFunction {
 // MVIL ATTRIBUTES
 
 fun onCrup(f: (View) -> Unit): KeyViewFunction  {
-    return attr("onCrup")(arrayListOf(f))
+    return attr("onCrup", arrayListOf(f))
 }
 fun onCreate(f: (View) -> Unit): KeyViewFunction  {
-    return attr("onCreate")(arrayListOf(f))
+    return attr("onCreate", arrayListOf(f))
 }
 fun onUpdate(f: (View) -> Unit): KeyViewFunction  {
-    return attr("onUpdate")(arrayListOf(f))
+    return attr("onUpdate", arrayListOf(f))
 }
 // ANDROID ATTRIBUTES
 
 fun backgroundColorHex(s: String): KeyViewFunction {
-    return attr("backgroundColorHex")(arrayListOf(s))
+    return attr("backgroundColorHex", arrayListOf(s))
 }
 fun checked(b: Boolean): KeyViewFunction {
-    return attr("checked")(arrayListOf(b))
+    return attr("checked", arrayListOf(b))
 }
 fun clickable(b: Boolean): KeyViewFunction {
-    return attr("clickable")(arrayListOf(b))
+    return attr("clickable", arrayListOf(b))
 }
 fun clipChildren(b: Boolean): KeyViewFunction {
-    return attr("clipChildren")(arrayListOf(b))
+    return attr("clipChildren", arrayListOf(b))
 }
 fun clipToPadding(b: Boolean): KeyViewFunction {
-    return attr("clipToPadding")(arrayListOf(b))
+    return attr("clipToPadding", arrayListOf(b))
 }
 fun colorFilterHex(s: String): KeyViewFunction {
     // https://stackoverflow.com/a/11275373
-    return attr("colorFilterHex")(arrayListOf(s))
+    return attr("colorFilterHex", arrayListOf(s))
 }
 fun columnCount(i: Int): KeyViewFunction {
-    return attr("columnCount")(arrayListOf(i))
+    return attr("columnCount", arrayListOf(i))
 }
 fun columnAlignmentWeight(alignment: GridLayout.Alignment, f: Float): KeyViewFunction {
-    return attr("columnAlignmentWeight")(arrayListOf(alignment, f))
+    return attr("columnAlignmentWeight", arrayListOf(alignment, f))
 }
 fun cornerRadius(f: Float): KeyViewFunction {
-    return attr("cornerRadius")(arrayListOf(f))
+    return attr("cornerRadius", arrayListOf(f))
 }
 fun elevation(v: Float): KeyViewFunction {
-    return attr("elevation")(arrayListOf(v))
+    return attr("elevation", arrayListOf(v))
 }
 fun focusable(b: Boolean): KeyViewFunction {
-    return attr("focusable")(arrayListOf(b))
+    return attr("focusable", arrayListOf(b))
 }
 fun focusableInTouchMode(b: Boolean): KeyViewFunction {
-    return attr("focusableInTouchMode")(arrayListOf(b))
+    return attr("focusableInTouchMode", arrayListOf(b))
 }
 fun imageResource(i: Int): KeyViewFunction {
-    return attr("imageResource")(arrayListOf(i))
+    return attr("imageResource", arrayListOf(i))
 }
 fun innerGravity(i: Int): KeyViewFunction {
-    return attr("innerGravity")(arrayListOf(i))
+    return attr("innerGravity", arrayListOf(i))
 }
 fun outerGravity(i: Int): KeyViewFunction {
-    return attr("outerGravity")(arrayListOf(i))
+    return attr("outerGravity", arrayListOf(i))
 }
 fun margin(all: Int): KeyViewFunction {
-    return attr("margin")(arrayListOf(all, all, all, all))
+    return attr("margin", arrayListOf(all, all, all, all))
 }
 fun margin(horizontal: Int, vertical: Int): KeyViewFunction {
-    return attr("margin")(arrayListOf(horizontal, vertical, horizontal, vertical))
+    return attr("margin", arrayListOf(horizontal, vertical, horizontal, vertical))
 }
 fun margin(l: Int, r: Int, t: Int, b: Int): KeyViewFunction {
-    return attr("margin")(arrayListOf(l, r, t, b))
+    return attr("margin", arrayListOf(l, r, t, b))
 }
 fun onClick(f: (View) -> Unit): KeyViewFunction {
-    return attr("onClick")(arrayListOf(f))
+    return attr("onClick", arrayListOf(f))
 }
 fun onGlobalLayout(f: (View) -> Unit): KeyViewFunction {
-    return attr("onGlobalLayout")(arrayListOf(f))
+    return attr("onGlobalLayout", arrayListOf(f))
 }
 fun onTouch(f: (View, MotionEvent) -> Boolean): KeyViewFunction {
-    return attr("onTouch")(arrayListOf(f))
+    return attr("onTouch", arrayListOf(f))
 }
 fun padding(l: Int, r: Int, t: Int, b: Int): KeyViewFunction {
-    return attr("padding")(arrayListOf(l, r, t, b))
+    return attr("padding", arrayListOf(l, r, t, b))
 }
 fun padding(horizontal: Int, vertical: Int): KeyViewFunction {
-    return attr("padding")(arrayListOf(horizontal, vertical, horizontal, vertical))
+    return attr("padding", arrayListOf(horizontal, vertical, horizontal, vertical))
 }
 fun padding(all: Int): KeyViewFunction {
-    return attr("padding")(arrayListOf(all, all, all, all))
+    return attr("padding", arrayListOf(all, all, all, all))
 }
 fun orientation(i: Int): KeyViewFunction {
-    return attr("orientation")(arrayListOf(i))
+    return attr("orientation", arrayListOf(i))
 }
 fun rowCount(i: Int): KeyViewFunction {
-    return attr("rowCount")(arrayListOf(i))
+    return attr("rowCount", arrayListOf(i))
 }
 fun rowFillWeight(f: Float): KeyViewFunction {
-    return attr("rowFillWeight")(arrayListOf(f))
+    return attr("rowFillWeight", arrayListOf(f))
 }
 fun rule(i: Int): KeyViewFunction {
-    return attr("rule")(arrayListOf(i))
+    return attr("rule", arrayListOf(i))
 }
 fun size(w: Int, h: Int): KeyViewFunction {
-    return attr("size")(arrayListOf(w, h))
+    return attr("size", arrayListOf(w, h))
 }
 fun tag(s: String): KeyViewFunction {
-    return attr("tag")(arrayListOf(s))
+    return attr("tag", arrayListOf(s))
 }
 fun text(s: String): KeyViewFunction {
-    return attr("text")(arrayListOf(s))
+    return attr("text", arrayListOf(s))
 }
 fun textColorHex(s: String): KeyViewFunction {
-    return attr("textColorHex")(arrayListOf(s))
+    return attr("textColorHex", arrayListOf(s))
 }
 fun textSize(f: Float): KeyViewFunction {
-    return attr("textSize")(arrayListOf(f))
+    return attr("textSize", arrayListOf(f))
 }
 fun weight(v: Float): KeyViewFunction {
-    return attr("weight")(arrayListOf(v))
+    return attr("weight", arrayListOf(v))
 }
 fun z(v: Float): KeyViewFunction {
-    return attr("z")(arrayListOf(v))
+    return attr("z", arrayListOf(v))
 }
