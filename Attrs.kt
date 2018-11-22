@@ -20,6 +20,8 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import java.lang.Exception
+import android.view.GestureDetector
+import android.view.GestureDetector.SimpleOnGestureListener
 
 typealias ViewFunction = (View) -> Unit
 typealias KeyViewFunction = Pair<String, ViewFunction>
@@ -51,6 +53,12 @@ fun getViewState(view: View, attr: String): ArrayList<Any>? {
     return when (attr) {
         "checked" -> arrayListOf((view as CheckBox).isChecked)
         else -> null
+    }
+}
+
+private class SingleTapConfirm : SimpleOnGestureListener() {
+    override fun onSingleTapUp(event: MotionEvent): Boolean {
+        return true
     }
 }
 
@@ -194,9 +202,12 @@ private val attrsMap: Map<String, (ArrayList<Any>) -> ViewFunction> = mapOf(
         }
     },
     "onTouch" to {view: View, args: ArrayList<Any> ->
-        val f = args[0] as (View, MotionEvent) -> Boolean
+        val f = args[0] as (View, MotionEvent, Boolean) -> Boolean
+        val activity = view.context
+        val gestureDetector = GestureDetector(activity, SingleTapConfirm())
         view.setOnTouchListener {view, motionEvent ->
-            f(view, motionEvent)
+            val isSingleClick = gestureDetector.onTouchEvent(motionEvent)
+            f(view, motionEvent, isSingleClick)
         }
     },
     "orientation" to {layout: View, args: ArrayList<Any> ->
@@ -370,7 +381,7 @@ fun onClick(f: (View) -> Unit): KeyViewFunction {
 fun onGlobalLayout(f: (View) -> Unit): KeyViewFunction {
     return attr("onGlobalLayout", arrayListOf(f))
 }
-fun onTouch(f: (View, MotionEvent) -> Boolean): KeyViewFunction {
+fun onTouch(f: (View, MotionEvent, Boolean) -> Boolean): KeyViewFunction {
     return attr("onTouch", arrayListOf(f))
 }
 fun padding(l: Int, r: Int, t: Int, b: Int): KeyViewFunction {
