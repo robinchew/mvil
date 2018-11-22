@@ -7,11 +7,11 @@ import android.view.ViewGroup
 
 data class Virtual(val cls: (Context) -> View,
                    val tag: String = "",
-                   val attrs: List<AttrSetter> = listOf(),
+                   val attrs: List<ViewFunction> = listOf(),
                    val children: List<Virtual> = listOf()){
 
     constructor(cls: (Context) -> View,
-                attrs: List<AttrSetter> = listOf(),
+                attrs: List<ViewFunction> = listOf(),
                 children: List<Virtual> = listOf()) : this(cls, "", attrs, children)
 }
 

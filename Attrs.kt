@@ -3,12 +3,10 @@ package mvil
 import android.content.res.ColorStateList
 import android.os.Build
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.PaintDrawable
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 
-import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +21,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import java.lang.Exception
 
-typealias AttrSetter = (View) -> Unit
+typealias ViewFunction = (View) -> Unit
 
 private val cachedAttrValues: MutableMap<View, MutableMap<String, ArrayList<Any>>> = mutableMapOf()
 
@@ -55,7 +53,7 @@ fun getViewState(view: View, attr: String): ArrayList<Any>? {
     }
 }
 
-private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
+private val attrs: Map<String, (ArrayList<Any>) -> ViewFunction> = mapOf(
     "onCreate" to {view: View, args: ArrayList<Any> ->
         val result = getViewCache(view, "created")
         val isCreated = result != null
@@ -284,134 +282,136 @@ private val attrs: Map<String, (ArrayList<Any>) -> AttrSetter> = mapOf(
         }
     }
 }
-// MVIL ATTRIBUTES
-
-fun onCrup(f: (View) -> Unit): AttrSetter  {
-    return attr("onCrup")(arrayListOf(f))
-}
-fun onCreate(f: (View) -> Unit): AttrSetter  {
-    return attr("onCreate")(arrayListOf(f))
-}
-fun onUpdate(f: (View) -> Unit): AttrSetter  {
-    return attr("onUpdate")(arrayListOf(f))
-}
-// ANDROID ATTRIBUTES
 
 // weight constants
 val FILL = ViewGroup.LayoutParams.MATCH_PARENT
 val MATCH = ViewGroup.LayoutParams.MATCH_PARENT
 val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
 
-fun attr(key: String): (ArrayList<Any>) -> AttrSetter {
+fun attr(key: String): (ArrayList<Any>) -> ViewFunction {
     val f = attrs.get(key)
     if (f != null) {
         return f
     }
     throw Exception("Mvil did not implement '${key}'. Please complain.")
 }
-fun backgroundColorHex(s: String): AttrSetter {
+
+// MVIL ATTRIBUTES
+
+fun onCrup(f: (View) -> Unit): ViewFunction  {
+    return attr("onCrup")(arrayListOf(f))
+}
+fun onCreate(f: (View) -> Unit): ViewFunction  {
+    return attr("onCreate")(arrayListOf(f))
+}
+fun onUpdate(f: (View) -> Unit): ViewFunction  {
+    return attr("onUpdate")(arrayListOf(f))
+}
+// ANDROID ATTRIBUTES
+
+fun backgroundColorHex(s: String): ViewFunction {
     return attr("backgroundColorHex")(arrayListOf(s))
 }
-fun checked(b: Boolean): AttrSetter {
+fun checked(b: Boolean): ViewFunction {
     return attr("checked")(arrayListOf(b))
 }
-fun clickable(b: Boolean): AttrSetter {
+fun clickable(b: Boolean): ViewFunction {
     return attr("clickable")(arrayListOf(b))
 }
-fun clipChildren(b: Boolean): AttrSetter {
+fun clipChildren(b: Boolean): ViewFunction {
     return attr("clipChildren")(arrayListOf(b))
 }
-fun clipToPadding(b: Boolean): AttrSetter {
+fun clipToPadding(b: Boolean): ViewFunction {
     return attr("clipToPadding")(arrayListOf(b))
 }
-fun colorFilterHex(s: String): AttrSetter {
+fun colorFilterHex(s: String): ViewFunction {
     // https://stackoverflow.com/a/11275373
     return attr("colorFilterHex")(arrayListOf(s))
 }
-fun columnCount(i: Int): AttrSetter {
+fun columnCount(i: Int): ViewFunction {
     return attr("columnCount")(arrayListOf(i))
 }
-fun columnAlignmentWeight(alignment: GridLayout.Alignment, f: Float): AttrSetter {
+fun columnAlignmentWeight(alignment: GridLayout.Alignment, f: Float): ViewFunction {
     return attr("columnAlignmentWeight")(arrayListOf(alignment, f))
 }
-fun cornerRadius(f: Float): AttrSetter {
+fun cornerRadius(f: Float): ViewFunction {
     return attr("cornerRadius")(arrayListOf(f))
 }
-fun elevation(v: Float): AttrSetter {
+fun elevation(v: Float): ViewFunction {
     return attr("elevation")(arrayListOf(v))
 }
-fun focusable(b: Boolean): AttrSetter {
+fun focusable(b: Boolean): ViewFunction {
     return attr("focusable")(arrayListOf(b))
 }
-fun focusableInTouchMode(b: Boolean): AttrSetter {
+fun focusableInTouchMode(b: Boolean): ViewFunction {
     return attr("focusableInTouchMode")(arrayListOf(b))
 }
-fun imageResource(i: Int): AttrSetter {
+fun imageResource(i: Int): ViewFunction {
     return attr("imageResource")(arrayListOf(i))
 }
-fun innerGravity(i: Int): AttrSetter {
+fun innerGravity(i: Int): ViewFunction {
     return attr("innerGravity")(arrayListOf(i))
 }
-fun outerGravity(i: Int): AttrSetter {
+fun outerGravity(i: Int): ViewFunction {
     return attr("outerGravity")(arrayListOf(i))
 }
-fun margin(all: Int): AttrSetter {
+fun margin(all: Int): ViewFunction {
     return attr("margin")(arrayListOf(all, all, all, all))
 }
-fun margin(horizontal: Int, vertical: Int): AttrSetter {
+fun margin(horizontal: Int, vertical: Int): ViewFunction {
     return attr("margin")(arrayListOf(horizontal, vertical, horizontal, vertical))
 }
-fun margin(l: Int, r: Int, t: Int, b: Int): AttrSetter {
+fun margin(l: Int, r: Int, t: Int, b: Int): ViewFunction {
     return attr("margin")(arrayListOf(l, r, t, b))
 }
-fun onClick(f: AttrSetter): AttrSetter {
+fun onClick(f: ViewFunction): ViewFunction {
     return attr("onClick")(arrayListOf(f))
 }
-fun onGlobalLayout(f: AttrSetter): AttrSetter {
+fun onGlobalLayout(f: ViewFunction): ViewFunction {
     return attr("onGlobalLayout")(arrayListOf(f))
 }
-fun onTouch(f: (View, MotionEvent) -> Boolean): AttrSetter {
+fun onTouch(f: (View, MotionEvent) -> Boolean): ViewFunction {
     return attr("onTouch")(arrayListOf(f))
 }
-fun padding(l: Int, r: Int, t: Int, b: Int): AttrSetter {
+fun padding(l: Int, r: Int, t: Int, b: Int): ViewFunction {
     return attr("padding")(arrayListOf(l, r, t, b))
 }
-fun padding(horizontal: Int, vertical: Int): AttrSetter {
+fun padding(horizontal: Int, vertical: Int): ViewFunction {
     return attr("padding")(arrayListOf(horizontal, vertical, horizontal, vertical))
 }
-fun padding(all: Int): AttrSetter {
+fun padding(all: Int): ViewFunction {
     return attr("padding")(arrayListOf(all, all, all, all))
 }
-fun orientation(i: Int): AttrSetter {
+fun orientation(i: Int): ViewFunction {
     return attr("orientation")(arrayListOf(i))
 }
-fun rowCount(i: Int): AttrSetter {
+fun rowCount(i: Int): ViewFunction {
     return attr("rowCount")(arrayListOf(i))
 }
-fun rowFillWeight(f: Float): AttrSetter {
+fun rowFillWeight(f: Float): ViewFunction {
     return attr("rowFillWeight")(arrayListOf(f))
 }
-fun rule(i: Int): AttrSetter {
+fun rule(i: Int): ViewFunction {
     return attr("rule")(arrayListOf(i))
 }
-fun size(w: Int, h: Int): AttrSetter {
+fun size(w: Int, h: Int): ViewFunction {
     return attr("size")(arrayListOf(w, h))
 }
-fun tag(s: String): AttrSetter {
+fun tag(s: String): ViewFunction {
     return attr("tag")(arrayListOf(s))
 }
-fun text(s: String): AttrSetter {
+fun text(s: String): ViewFunction {
     return attr("text")(arrayListOf(s))
 }
-fun textColorHex(s: String): AttrSetter {
+fun textColorHex(s: String): ViewFunction {
     return attr("textColorHex")(arrayListOf(s))
 }
-fun textSize(f: Float): AttrSetter {
+fun textSize(f: Float): ViewFunction {
     return attr("textSize")(arrayListOf(f))
 }
-fun weight(v: Float): AttrSetter {
+fun weight(v: Float): ViewFunction {
     return attr("weight")(arrayListOf(v))
 }
-fun z(v: Float): AttrSetter {
+fun z(v: Float): ViewFunction {
     return attr("z")(arrayListOf(v))
 }
