@@ -55,7 +55,9 @@ fun render(activity: Activity, rootView: ViewGroup, virtuals: List<Virtual>) {
             onCrup(realChild)
         }
         for ((key, f) in virtualChild.attrs) {
-            f(realChild)
+            if(! listOf("onCreate", "onUpdate", "onCrup").contains(key)) {
+                f(realChild)
+            }
         }
         if (virtualChild.children.size > 0 || ((realChild as? ViewGroup)?.childCount ?: 0) > 0) {
             // Recur if there are still either virtual or real children to render
