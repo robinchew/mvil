@@ -3,6 +3,7 @@ package mvil
 import android.content.res.ColorStateList
 import android.os.Build
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.PaintDrawable
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
@@ -16,12 +17,14 @@ import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.GridLayout
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import java.lang.Exception
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
+import org.jetbrains.anko.withAlpha
 
 typealias ViewFunction = (View) -> Unit
 typealias KeyViewFunction = Pair<String, ViewFunction>
@@ -84,8 +87,16 @@ private val attrsMap: Map<String, (ArrayList<Any>) -> ViewFunction> = mapOf(
     "clipToPadding" to {view: View, args: ArrayList<Any> ->
         (view as ViewGroup).clipToPadding = args[0] as Boolean
     },
-    "colorFilterHex" to {view: View, args: ArrayList<Any> ->
-        (view as ImageButton).setColorFilter(Color.parseColor(args[0] as String))
+    "colorFilterWithAlphaHex" to {view: View, args: ArrayList<Any> ->
+        when (view) {
+            is ImageView ->
+                view.setColorFilter(
+                    Color.parseColor(args[0] as String).withAlpha(args[1] as Int),
+                    PorterDuff.Mode.SRC_IN)
+            else ->
+                throw IllegalArgumentException("colorFilterHex for ${view} is unsupported");
+
+        }
     },
     "columnCount" to {layout: View, args: ArrayList<Any> ->
         (layout as GridLayout).columnCount = args[0] as Int
@@ -130,6 +141,8 @@ private val attrsMap: Map<String, (ArrayList<Any>) -> ViewFunction> = mapOf(
             is FloatingActionButton ->
                 view.setImageResource(args[0] as Int)
             is ImageButton ->
+                view.setImageResource(args[0] as Int)
+            is ImageView ->
                 view.setImageResource(args[0] as Int)
             else ->
                 throw IllegalArgumentException("imageResource for ${view} is unsupported");
@@ -242,6 +255,9 @@ private val attrsMap: Map<String, (ArrayList<Any>) -> ViewFunction> = mapOf(
     "textSize" to {v: View, args: ArrayList<Any> ->
         (v as TextView).textSize = args[0] as Float
     },
+    "visibility" to {v: View, args: ArrayList<Any> ->
+        v.visibility = args[0] as Int
+    },
     "weight" to {view: View, args: ArrayList<Any> ->
         val params = view.layoutParams
 
@@ -317,9 +333,13 @@ fun clipChildren(b: Boolean): KeyViewFunction {
 fun clipToPadding(b: Boolean): KeyViewFunction {
     return attr("clipToPadding", arrayListOf(b))
 }
-fun colorFilterHex(s: String): KeyViewFunction {
+fun colorFilterHex(hex: String): KeyViewFunction {
     // https://stackoverflow.com/a/11275373
-    return attr("colorFilterHex", arrayListOf(s))
+    return attr("colorFilterWithAlphaHex", arrayListOf(hex, 255))
+}
+fun colorFilterWithAlphaHex(hex: String, alpha: Int): KeyViewFunction {
+    // https://stackoverflow.com/a/11275373
+    return attr("colorFilterWithAlphaHex", arrayListOf(hex, alpha))
 }
 fun columnCount(i: Int): KeyViewFunction {
     return attr("columnCount", arrayListOf(i))
@@ -404,6 +424,9 @@ fun textSize(f: Float): KeyViewFunction {
 }
 fun weight(v: Float): KeyViewFunction {
     return attr("weight", arrayListOf(v))
+}
+fun visibility(v: Int): KeyViewFunction {
+    return attr("visibility", arrayListOf(v))
 }
 fun z(v: Float): KeyViewFunction {
     return attr("z", arrayListOf(v))
