@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import android.widget.ImageView
 import kotlin.math.max
 import kotlin.math.min
 
@@ -94,5 +96,20 @@ fun deleteExcessChildren(rootView: ViewGroup, virtuals: List<Virtual>) {
 class RenderView(val activity: Activity): FrameLayout(activity) {
     fun sync(virtual: Virtual) {
         render(activity, this, arrayListOf(virtual))
+    }
+}
+
+class StatefulImageView(val activity: Context): ImageView(activity) {
+    var layoutBottom: Int = 0
+    var layoutRight: Int = 0
+
+    init {
+        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                layoutBottom = bottom
+                layoutRight = right
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 }

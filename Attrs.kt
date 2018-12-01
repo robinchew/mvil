@@ -1,5 +1,6 @@
 package mvil
 
+import android.animation.Animator
 import android.content.res.ColorStateList
 import android.os.Build
 import android.graphics.Color
@@ -24,6 +25,7 @@ import android.widget.TextView
 import java.lang.Exception
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.ViewAnimationUtils
 import org.jetbrains.anko.withAlpha
 
 typealias ViewFunction = (View) -> Unit
@@ -135,6 +137,52 @@ private val attrsMap: Map<String, (ArrayList<Any>) -> ViewFunction> = mapOf(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             view.isFocusableInTouchMode = args[0] as Boolean
         }
+    },
+    "imageCheck" to { view: View, args: ArrayList<Any> ->
+        val isChecked = (args[0] as Int) == 1
+        val layoutMain = view
+        val v = view as StatefulImageView
+        val x = view.layoutRight / 2
+        val y = view.layoutBottom / 2
+
+        val openOrClose = (if (isChecked)
+            {v: List<Int> -> v} else
+            {v: List<Int> -> listOf(v[1], v[0])})
+        val (startRadius, endRadius) = openOrClose(listOf(0, Math.hypot(
+            layoutMain.getWidth().toDouble(),
+            layoutMain.getHeight().toDouble()).toInt()))
+
+        //fab.setBackgroundTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), android.R.color.white, null)))
+        //fab.setImageResource(R.drawable.ic_close_grey)
+
+        val anim = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ViewAnimationUtils.createCircularReveal(view, x, y, startRadius.toFloat(), endRadius.toFloat())
+        } else {
+            TODO("VERSION.SDK_INT < LOLLIPOP")
+        }
+        if (isChecked) {
+            view.setVisibility(View.VISIBLE)
+        } else {
+            anim.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animator: Animator) {
+
+                }
+
+                override fun onAnimationEnd(animator: Animator) {
+                    view.setVisibility(View.GONE)
+                }
+
+                override fun onAnimationCancel(animator: Animator) {
+
+                }
+
+                override fun onAnimationRepeat(animator: Animator) {
+
+                }
+            })
+        }
+        //layoutButtons.setVisibility(View.VISIBLE)
+        anim.start()
     },
     "imageResource" to { view: View, args: ArrayList<Any> ->
         when (view) {
@@ -358,6 +406,9 @@ fun focusable(b: Boolean): KeyViewFunction {
 }
 fun focusableInTouchMode(b: Boolean): KeyViewFunction {
     return attr("focusableInTouchMode", arrayListOf(b))
+}
+fun imageCheck(i: Int): KeyViewFunction {
+    return attr("imageCheck", arrayListOf(i))
 }
 fun imageResource(i: Int): KeyViewFunction {
     return attr("imageResource", arrayListOf(i))
