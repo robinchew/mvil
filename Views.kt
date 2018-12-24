@@ -10,6 +10,8 @@ import android.widget.ImageView
 import kotlin.math.max
 import kotlin.math.min
 
+typealias RealisedView = View
+
 fun realiseView(activity: Context, parent: ViewGroup, virtual: Virtual, index: Int): View {
     val view = virtual.cls(activity)
     parent.addView(view, index)
@@ -45,7 +47,7 @@ fun pop(many: MutableList<View>): View? {
     return popped
 }
 
-fun orderAndCullViews(parentView: ViewGroup,
+fun orderAndCullViews(activity: Context, parentView: ViewGroup,
                       virtualChildren: List<Virtual>): List<View?> {
     val childrenHaveTags = virtualChildren.all {it.tag != ""}
     if (childrenHaveTags) {
@@ -63,9 +65,14 @@ fun orderAndCullViews(parentView: ViewGroup,
         }
         return taggedChildren
     }
-    // This is where excess child views are removed when the views have
-    // NO tags
+    // When there are NO tags:
+    // - excess child views are removed
+    // - views are deleted if virtual and real class do not match
     deleteExcessChildren(parentView, virtualChildren)
+    deleteUnmatchedRealAndVirtualClass(parentView, virtualChildren.map {
+        it.cls(activity)
+    })
+
     return getChildren(parentView, virtualChildren.size)
 }
 
@@ -78,6 +85,15 @@ fun getChildren(viewGroup: ViewGroup): List<View> {
 fun getChildren(viewGroup: ViewGroup, expectedLength: Int): List<View?> {
     return (0..expectedLength-1).map {i ->
         viewGroup.getChildAt(i)
+    }
+}
+
+fun deleteUnmatchedRealAndVirtualClass(realParent: ViewGroup,
+                                       virtualChildren: List<RealisedView>) {
+    getChildren(realParent).zip(virtualChildren).forEach {(real, realised) ->
+        if (real::class != realised::class) {
+            removeChild(realParent, real)
+        }
     }
 }
 

@@ -21,6 +21,7 @@ fun buildTags(tags: List<String>): String {
 
 fun render(activity: Activity, rootView: ViewGroup, virtuals: List<Virtual>) {
     val realChildren = orderAndCullViews(
+        activity,
         rootView,
         virtuals)
     realChildren.zip(virtuals).forEachIndexed {i, (realChildOrNull, virtualChild) ->
