@@ -207,7 +207,7 @@ private val attrsMap: Map<String, (ArrayList<Any>) -> ViewFunction> = mapOf(
         }
     },
     "margin" to  {v: View, args: ArrayList<Any> ->
-        val (l, r, t, b) = args as ArrayList<Int>
+        val (l, t, r, b) = args as ArrayList<Int>
         val p = v.getLayoutParams() as ViewGroup.MarginLayoutParams
         p.leftMargin = l
         p.rightMargin = r
@@ -219,8 +219,8 @@ private val attrsMap: Map<String, (ArrayList<Any>) -> ViewFunction> = mapOf(
         (view as TextView).minHeight = args[0] as Int
     },
     "padding" to {view: View, args: ArrayList<Any> ->
-        val (l, r, t, b) = args as ArrayList<Int>
-        view.setPadding(l, r, t, b)
+        val (l, t, r, b) = args as ArrayList<Int>
+        view.setPadding(l, t, r, b)
     },
     "onClick" to {view: View, args: ArrayList<Any> ->
         val f = args[0] as (View) -> Unit
